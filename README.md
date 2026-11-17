@@ -193,6 +193,47 @@ SMART の POH が一周して小さな値になっていても正常。
 - Dell KB 000464492（根本原因の公式説明）: <https://www.dell.com/support/kbdoc/en-my/000464492/>
 - Micron Storage Executive のダウンロード: <https://www.micron.com/sales-support/downloads/software-drivers/storage-executive-software>
 
+## 9. 追加情報: 日立・Dell の日本語告知
+
+サーバーベンダー経由で購入したドライブは、ベンダー独自の型番とファームウェア版数で管理されている。
+その場合は §4 の Micron 純正ファームウェアではなく、各ベンダーが配布する対策版を適用する。
+
+### 9.1 日立 HA8000V シリーズ（CRI-2026-0007）
+
+- 文書: [重要なお知らせ] 特定のSATA SSDにおいて、累積通電時間が65,535時間(約7.5年)を超過すると、性能が著しく低下する事象について
+- 公開 2026-09-18、最終更新 2026-10-30。重要性「重要」、発生頻度「高」。
+- 現象: 読み込み・書き込み性能が著しく低下し、システム起動不可などの重大な障害に至る可能性がある。ドライブは故障せず、データも消失しない。
+- 回避策: なし。対策はファームウェアの更新のみ。
+- 対象装置: HA8000V/DL20・DL360・DL380・DL580・ML30・ML350 Gen10
+- 告知はドライブのメーカー名を明記していない。
+
+| 対象製品名 | 対策バージョン |
+|---|---|
+| MK000240GWEZF / MK000480GWEZH / MK000960GWEZK / MK001920GWHRU / VK001920GWEZE | HPGH 以降 |
+| MK000480GWUGF / MK000960GWUGH / MK001920GWUGK / VK000480GWSXF / VK000960GWSXH | HPG4 以降 |
+| MK003840GWHTE | HPG9 以降 |
+| MR000240GWFLU / MR000480GWFLV / MR000960GWFMA（M.2） | 対策版を適用できない。製品サポート窓口に問い合わせる |
+
+- 適用手順: Windows Server 2016/2019/2022、RHEL 8/9、ESXi 8.0、ESX 9.0/9.1（MK003840GWHTE は ESXi 7.0/8.0）ではオンライン適用できる。それ以外の OS、OS が起動しない場合、AHCI モードの SATA コントローラに接続して ESXi/ESX で使っている場合はオフライン適用となる。
+- 製品名・累積通電時間・ファームウェア版数の確認方法と更新手順は、HDD/SSD の通電時間関連の事象をまとめた CRI-2026-0008 に集約されている（2026-10-30 の更新で移動）。
+- <https://www.hitachi.co.jp/products/it/ha8000v/support/productinfo/article.html?id=CRI-2026-0007>
+- <https://www.hitachi.co.jp/products/it/ha8000v/support/productinfo/article.html?id=CRI-2026-0008>
+
+### 9.2 Dell PowerEdge ほか（KB 000464492 日本語版）
+
+- 文書: PowerEdge: Micron 5x00シリーズ ソリッド ステート ドライブ 65,535 POH後にパフォーマンスが低下
+- 最終更新 2026-10-23。対象は PowerEdge、VxRail、PowerFlex、XC Core、PowerProtect DP など。
+- 原因の説明は §1 と同じ（workload log の 16 ビットカウンタが 65,535 時間で上限に達し、デバッグログの連続出力がコントローラの CPU を圧迫する）。データ整合性や信頼性へのリスクは確認されていないとしている。
+
+| ドライブ | 型番 | 対策ファームウェア（最小） |
+|---|---|---|
+| Micron 5100 M.2 | MTFDDAV240TCB / MTFDDAV480TCB / MTFDDAV960TCB / MTFDDAV1T9TCB | L013 |
+| Micron 5100 U.2 | MTFDDAK240TCB / MTFDDAK480TCB / MTFDDAK960TCB / MTFDDAK1T9TCB | L013 |
+| Micron 5200 U.2 | MTFDDAK480TDC / MTFDDAK960TDD / MTFDDAK1T9TDD / MTFDDAK240TDN / MTFDDAK480TDN / MTFDDAK960TDN / MTFDDAK1T9TDN | F006 |
+
+- ファームウェアは Dell サポートサイトから入手できる。Micron 5300 / 5400 向けの対策は開発中とされている。
+- <https://www.dell.com/support/kbdoc/ja-jp/000464492/>
+
 ---
 
 # 中文
